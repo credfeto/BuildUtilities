@@ -7,6 +7,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetVersionInformation", "Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildEnvironmentTests", "BuildEnvironmentTests\BuildEnvironmentTests.csproj", "{8AE1B8FE-3D51-4E72-B343-72FB319B2F3B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ACA43CC1-B761-4981-8A64-92D0BAAE2260}"
+	ProjectSection(SolutionItems) = preProject
+		FxCopDictionary.xml = FxCopDictionary.xml
+		LinesToAddToProjects.txt = LinesToAddToProjects.txt
+		README.md = README.md
+		Settings.FxCop = Settings.FxCop
+		Settings.StyleCop = Settings.StyleCop
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
