@@ -1,0 +1,116 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <BuildDependsOn>$(BuildDependsOn);FxCop</BuildDependsOn>
+  </PropertyGroup>
+
+  <!-- Define FxCopTreatErrorsAsWarnings property. -->
+  <PropertyGroup Condition="'$(FxCopTreatErrorsAsWarnings)' == ''">
+    <FxCopTreatErrorsAsWarnings>true</FxCopTreatErrorsAsWarnings>
+  </PropertyGroup>
+
+  <!-- Define FxCopEnabled property. -->
+  <PropertyGroup Condition="'$(FxCopEnabled)' == ''">
+    <FxCopEnabled>true</FxCopEnabled>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(FxCopEnabled)' == 'true' AND !$(DefineConstants.Contains('CODE_ANALYSIS'))">
+	<DefineConstants>$(DefineConstants);CODE_ANALYSIS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<FxCopXslDir>$(MSBuildThisFileDirectory)\Xsl</FxCopXslDir>
+	<FxCopDir>$(MSBuildThisFileDirectory)</FxCopDir>
+	<FxCopCmdExecutable>$(FxCopDir)\FxCopCmd.exe</FxCopCmdExecutable>
+	<FxCopSettingsFileName>Settings.FxCop</FxCopSettingsFileName>
+	<FxCopDictionaryFileName>FxCopDictionary.xml</FxCopDictionaryFileName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(FxCopEnabled)' == 'true'">
+	<FxCopTransformFile>$(FxCopXslDir)\VSConsoleOutputError.xsl</FxCopTransformFile>
+  </PropertyGroup>
+
+
+  <PropertyGroup Condition="'$(FxCopEnabled)' != 'true'">
+	<FxCopTransformFile>$(FxCopXslDir)\VSConsoleOutputWarning.xsl</FxCopTransformFile>
+  </PropertyGroup>
+
+	<Target Name="FindFileAbove" Outputs="$(FoundFileSpec)">
+<!--
+		<Message Importance="high" Text="Looking in Folder: $(Where)"/>
+		<Message Importance="high" Text="For File: $(What)"/>
+-->
+		<CombinePath BasePath ="$(Where)" Paths ="$(What)" >
+			<Output TaskParameter ="CombinedPaths" PropertyName="FileSpec"/>
+		</CombinePath>
+
+<!--
+		<Message Importance="high" Text="Full File: $(FileSpec)"/>
+-->
+
+		<PropertyGroup Condition="Exists('$(FileSpec)')">
+			<FoundFileSpec>$(FileSpec)</FoundFileSpec>
+		</PropertyGroup>
+<!--
+
+		<Message Condition="Exists('$(FileSpec)')"  Importance="high" Text="Found File: $(FoundFileSpec)"/>
+-->
+		<MSBuild Condition="!Exists('$(FileSpec)')" Projects="$(MSBuildProjectFile)" Targets="SearchAbove" Properties="Where=$(Where);What=$(What)">
+			<Output TaskParameter="TargetOutputs" PropertyName="FoundFileSpec"/>
+		</MSBuild>
+		
+	</Target>
+
+	<Target Name="SearchAbove" Outputs="$(FoundFileSpec)">
+
+		<CreateItem Include="$(Where)\..">
+		    <Output ItemName="ParentDirectory" TaskParameter="Include"/>
+		</CreateItem>
+
+		<CreateProperty Value="%(ParentDirectory.FullPath)">
+		    <Output PropertyName="LocalParent" TaskParameter="Value"/>
+		</CreateProperty>
+
+		<CreateProperty Value="%(ParentDirectory.RootDir)">
+		    <Output PropertyName="RootDirectory" TaskParameter="Value"/>
+		</CreateProperty>
+
+<!--
+		<Message Importance="high" Text="LocalParent: $(LocalParent)"/>
+		<Message Importance="high" Text="Root: $(RootDirectory)"/>
+-->
+		<MSBuild Condition="'$(Where)' != '$(RootDirectory)'" Projects="$(MSBuildProjectFile)" Targets="FindFileAbove" Properties="Where=$(LocalParent);What=$(What)">
+			<Output TaskParameter="TargetOutputs" PropertyName="FoundFileSpec"/>
+		</MSBuild>
+	</Target>
+
+
+
+  <!-- Define target: FxCop -->
+  <Target Name="FxCop" DependsOnTargets="Compile" Condition="'$(FxCopEnabled)' != 'false'">
+
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="FindFileAbove" Properties="Where=$(ProjectDir);What=$(FxCopSettingsFileName)">
+      <Output TaskParameter="TargetOutputs" PropertyName="FxCopProjectFile"/>
+    </MSBuild>
+
+    <Error Condition="'$(FxCopProjectFile)' == ''" Text="$(FxCopSettingsFileName) could not be found!" />
+<!--
+	<Message Importance="high" Text="Project File: $(FxCopProjectFile)"/>
+-->
+
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="FindFileAbove" Properties="Where=$(ProjectDir);What=$(FxCopDictionaryFileName)">
+      <Output TaskParameter="TargetOutputs" PropertyName="FxCopDictionary"/>
+    </MSBuild>
+
+    <Error Condition="'$(FxCopDictionary)' == ''" Text="$(FxCopDictionaryFileName) could not be found!" />	
+<!--
+	<Message Importance="high" Text="Dictionary File: $(FxCopDictionary)"/>
+-->
+
+    <Exec Command="&quot;$(FxCopCmdExecutable)&quot; /quiet /file:&quot;$(TargetPath)&quot; /project:&quot;$(FxCopProjectFile)&quot; /dictionary:&quot;$(FxCopDictionary)&quot; /searchgac /consolexsl:&quot;$(FxCopTransformFile)&quot; /ignoregeneratedcode /console" 
+          ContinueOnError="$(FxCopTreatErrorsAsWarnings)"
+          />
+	
+
+  </Target>
+</Project>
