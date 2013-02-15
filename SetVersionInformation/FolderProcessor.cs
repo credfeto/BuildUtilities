@@ -14,6 +14,7 @@ using System.Diagnostics.Contracts;
 using System.IO;
 
 using JetBrains.Annotations;
+using SetVersionInformation.Properties;
 
 #endregion
 
@@ -46,7 +47,7 @@ namespace SetVersionInformation
                 return;
             }
 
-            Console.WriteLine("Processing files in {0}", folder);
+            Console.WriteLine(Resources.ProcessingFilesIn, folder);
             var directories = directoryInfo.GetDirectories();
             foreach (var directory in directories)
             {
@@ -78,8 +79,8 @@ namespace SetVersionInformation
         {
             Contract.Requires(!string.IsNullOrEmpty(name));
 
-            return StringComparer.InvariantCultureIgnoreCase.Equals(name, ".svn")
-                   || StringComparer.InvariantCultureIgnoreCase.Equals(name, ".git");
+            return StringComparer.InvariantCultureIgnoreCase.Equals(name, @".svn")
+                   || StringComparer.InvariantCultureIgnoreCase.Equals(name, @".git");
         }
 
         #endregion

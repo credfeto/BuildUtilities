@@ -17,6 +17,7 @@ using System.IO;
 using JetBrains.Annotations;
 
 using SetVersionInformation.ContinuousIntegrationSettings;
+using SetVersionInformation.Properties;
 
 #endregion
 
@@ -161,7 +162,7 @@ namespace SetVersionInformation
                 var version = LoadVersionInformation(args);
 
                 Console.WriteLine(
-                    "Version Number: {0}.{1}.{2}.{3}",
+                    Resources.Program_Main_Version_Number___0___1___2___3_,
                     version.Major,
                     version.Minor,
                     version.SubversionRevision,
@@ -178,9 +179,9 @@ namespace SetVersionInformation
             }
             catch (Exception exception)
             {
-                Console.WriteLine("Unexpected Exception : {0}", exception.Message);
-                Console.WriteLine("Exception Type : {0}", exception.GetType().FullName);
-                Console.WriteLine("Stack Trace:");
+                Console.WriteLine(Resources.UnexpectedException, exception.Message);
+                Console.WriteLine(Resources.ExceptionType, exception.GetType().FullName);
+                Console.WriteLine(Resources.StackTrace);
                 Console.WriteLine(exception.StackTrace);
                 return 1;
             }

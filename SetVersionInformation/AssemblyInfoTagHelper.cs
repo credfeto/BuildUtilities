@@ -17,6 +17,7 @@ using System.Linq;
 using System.Reflection;
 
 using JetBrains.Annotations;
+using SetVersionInformation.Properties;
 
 #endregion
 
@@ -65,7 +66,7 @@ namespace SetVersionInformation
                 var dictionary = new Dictionary<string, Func<IAssemblyInfoFormatTraits, VersionProperties, string>>();
                 foreach (var method in methods)
                 {
-                    Console.WriteLine("Found Tag : {0}", method.Name);
+                    Console.WriteLine(Resources.FoundTag, method.Name);
 
                     dictionary.Add(method.Name, CreateMethodInvoker(method));
                 }
