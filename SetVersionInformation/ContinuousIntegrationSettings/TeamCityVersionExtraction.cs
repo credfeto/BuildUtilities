@@ -52,7 +52,7 @@ namespace SetVersionInformation.ContinuousIntegrationSettings
         {
             Contract.Requires(version != null);
 
-            var environment = Environment.GetEnvironmentVariable("CCNetNumericLabel") ?? string.Empty;
+            var environment = Environment.GetEnvironmentVariable("BUILD_NUMBER") ?? string.Empty;
 
             int buildNumber;
             if (!int.TryParse(environment, out buildNumber))
