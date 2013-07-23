@@ -10,7 +10,7 @@
 		<MSBuild Projects="BuildUtilities.sln" BuildInParallel="True" Properties="Configuration=Release;Platform=Any CPU" />
 	</Target>
 
-	<Target Name="PackageExecutables" DependsOnTargets="BuildSource;PackageNunit">
+	<Target Name="PackageExecutables" DependsOnTargets="BuildSource">
 	</Target>
 
 </Project>
