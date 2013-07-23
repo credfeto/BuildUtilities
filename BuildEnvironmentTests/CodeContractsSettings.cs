@@ -210,6 +210,7 @@ namespace BuildEnvironmentTests
         /// </summary>
         [Test]
         [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Unit Test Method.")]
+        [Ignore("Setting not available in VS2012")]
         public void CodeContractsSuggestEnsures()
         {
             ProjectHelpers.HasPropertyGroupSetting("CodeContractsSuggestEnsures", true, false);
