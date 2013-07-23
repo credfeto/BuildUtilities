@@ -50,5 +50,3 @@ using System.Security;
 [assembly: CLSCompliant(true)]
 [assembly: AssemblyInformationalVersion("1.0.0.1")]
 [assembly: NeutralResourcesLanguage("en", UltimateResourceFallbackLocation.MainAssembly)]
-[assembly: SecurityTransparent]
-[assembly: SecurityRules(SecurityRuleSet.Level2)]

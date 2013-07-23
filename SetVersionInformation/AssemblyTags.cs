@@ -286,7 +286,7 @@ namespace SetVersionInformation
             Contract.Requires(version != null);
 
             return string.Format(
-                CultureInfo.InvariantCulture, "(\"{0}\", UltimateResourceFallbackLocation.MainAssembly)", "en");
+                CultureInfo.InvariantCulture, "(\"{0}\", UltimateResourceFallbackLocation.MainAssembly)", "en-GB");
         }
 
         #endregion
