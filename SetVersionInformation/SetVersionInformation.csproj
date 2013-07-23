@@ -135,6 +135,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=6.1.0.0, Culture=neutral, PublicKeyToken=3f033448d4bb5376, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\JetBrains.Annotations.7.0\lib\net45\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -170,12 +174,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="BuildUtilities.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Jetbrains.Annotations\JetBrains.Annotations.csproj">
-      <Project>{E51022E1-AEDD-44CE-AEDF-FE8AEC760487}</Project>
-      <Name>JetBrains.Annotations</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">

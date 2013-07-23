@@ -39,3 +39,4 @@ StyleCop.Cache
 *.lph
 *.zip
 *.dotCover
+packages/*

@@ -116,4 +116,10 @@
   <data name="ProcessingFilesIn" xml:space="preserve">
     <value>Processing files in {0}</value>
   </data>
+  <data name="AssemblyInfoUpdater_OutputMissingAttributes_____Adding_Missing_Attribute___0_" xml:space="preserve">
+    <value> -- Adding Missing Attribute: {0}</value>
+  </data>
+  <data name="AssemblyInfoUpdater_ProcessAssemblyInfoFile_Found_File___0_" xml:space="preserve">
+    <value>Found File: {0}</value>
+  </data>
 </root>

@@ -117,6 +117,10 @@
     <AssemblyOriginatorKeyFile>BuildUtilities.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=6.1.0.0, Culture=neutral, PublicKeyToken=3f033448d4bb5376, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\JetBrains.Annotations.7.0\lib\net45\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\Assemblies\nunit.framework.dll</HintPath>
     </Reference>
@@ -147,12 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildUtilities.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Jetbrains.Annotations\JetBrains.Annotations.csproj">
-      <Project>{E51022E1-AEDD-44CE-AEDF-FE8AEC760487}</Project>
-      <Name>JetBrains.Annotations</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

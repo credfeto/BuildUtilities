@@ -13,7 +13,4 @@
 	<Target Name="PackageExecutables" DependsOnTargets="BuildSource;PackageNunit">
 	</Target>
 
-	<Target Name="PackageNunit" DependsOnTargets="BuildSource">
-		<Exec Command="BuildHelpers\zip.exe -9rj -b BuildEnvironmentTests\bin\Release BuildEnvironmentTests.zip BuildEnvironmentTests\bin\Release" />
-	</Target>
 </Project>

@@ -17,38 +17,37 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-
 using JetBrains.Annotations;
+using SetVersionInformation.Properties;
 
 #endregion
 
 namespace SetVersionInformation
 {
     /// <summary>
-    /// The assembly info updater.
+    ///     The assembly info updater.
     /// </summary>
     internal class AssemblyInfoUpdater
     {
         #region Constants and Fields
 
         /// <summary>
-        /// The file formatters.
+        ///     The file formatters.
         /// </summary>
-        [NotNull]
-        private readonly List<IAssemblyInfoFormatTraits> _formatters;
+        [NotNull] private readonly List<IAssemblyInfoFormatTraits> _formatters;
 
         /// <summary>
-        /// The tags to modify.
+        ///     The tags to modify.
         /// </summary>
-        [NotNull]
-        private readonly Dictionary<string, Func<IAssemblyInfoFormatTraits, VersionProperties, string>> _tagsToModify;
+        [NotNull] private readonly Dictionary<string, Func<IAssemblyInfoFormatTraits, VersionProperties, string>>
+            _tagsToModify;
 
         #endregion
 
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssemblyInfoUpdater"/> class.
+        ///     Initializes a new instance of the <see cref="AssemblyInfoUpdater" /> class.
         /// </summary>
         /// <exception cref="InvalidConfigurationException">No Tags Defined.</exception>
         /// <exception cref="InvalidConfigurationException">No File Formats.</exception>
@@ -72,23 +71,23 @@ namespace SetVersionInformation
         #region Public Methods
 
         /// <summary>
-        /// The process folder contents.
+        ///     The process folder contents.
         /// </summary>
         /// <param name="directoryInfo">
-        /// The directory info.
+        ///     The directory info.
         /// </param>
         /// <param name="version">
-        /// The version.
+        ///     The version.
         /// </param>
         public void ProcessFolderContents([NotNull] DirectoryInfo directoryInfo, [NotNull] VersionProperties version)
         {
             Contract.Requires(directoryInfo != null);
             Contract.Requires(version != null);
 
-            foreach (var fileFormat in _formatters)
+            foreach (IAssemblyInfoFormatTraits fileFormat in _formatters)
             {
-                var files = directoryInfo.GetFiles(fileFormat.FileSpecification);
-                foreach (var file in files)
+                FileInfo[] files = directoryInfo.GetFiles(fileFormat.FileSpecification);
+                foreach (FileInfo file in files)
                 {
                     ProcessAssemblyInfoFile(file.FullName, fileFormat, version);
                 }
@@ -100,19 +99,19 @@ namespace SetVersionInformation
         #region Methods
 
         /// <summary>
-        /// Determines whether the line contains the tag.
+        ///     Determines whether the line contains the tag.
         /// </summary>
         /// <param name="tagName">
-        /// The tag name.
+        ///     The tag name.
         /// </param>
         /// <param name="formatTraits">
-        /// The format traits.
+        ///     The format traits.
         /// </param>
         /// <param name="line">
-        /// The line to check.
+        ///     The line to check.
         /// </param>
         /// <returns>
-        /// <see langword="true"/> if the line contains the tag; <see langword="false"/>, otherwise.
+        ///     <see langword="true" /> if the line contains the tag; <see langword="false" />, otherwise.
         /// </returns>
         private static bool IsLineOfTag(
             [NotNull] string tagName, [NotNull] IAssemblyInfoFormatTraits formatTraits, [NotNull] string line)
@@ -144,16 +143,16 @@ namespace SetVersionInformation
         }
 
         /// <summary>
-        /// The get tag formatter.
+        ///     The get tag formatter.
         /// </summary>
         /// <param name="formatTraits">
-        /// The format traits.
+        ///     The format traits.
         /// </param>
         /// <param name="line">
-        /// The line search for the tag in.
+        ///     The line search for the tag in.
         /// </param>
         /// <returns>
-        /// The tag formatter for the line.
+        ///     The tag formatter for the line.
         /// </returns>
         [CanBeNull]
         private KeyValuePair<string, Func<IAssemblyInfoFormatTraits, VersionProperties, string>>? GetTagFormatter(
@@ -178,7 +177,7 @@ namespace SetVersionInformation
         }
 
         /// <summary>
-        /// The output missing attributes.
+        ///     The output missing attributes.
         /// </summary>
         /// <param name="formatTraits">The format traits.</param>
         /// <param name="version">The version.</param>
@@ -199,24 +198,24 @@ namespace SetVersionInformation
             {
                 if (!alreadyWrittenTags.Contains(current.Key))
                 {
-                    Console.WriteLine(" -- Adding Missing Attribute: {0}", current.Key);
-                    var str = current.Value(formatTraits, version);
+                    Console.WriteLine(Resources.AssemblyInfoUpdater_OutputMissingAttributes_____Adding_Missing_Attribute___0_, current.Key);
+                    string str = current.Value(formatTraits, version);
                     outputText.Add(str);
                 }
             }
         }
 
         /// <summary>
-        /// The process assembly info file.
+        ///     The process assembly info file.
         /// </summary>
         /// <param name="fileName">
-        /// The file name.
+        ///     The file name.
         /// </param>
         /// <param name="formatTraits">
-        /// The format traits.
+        ///     The format traits.
         /// </param>
         /// <param name="version">
-        /// The version.
+        ///     The version.
         /// </param>
         private void ProcessAssemblyInfoFile(
             [NotNull] string fileName,
@@ -227,26 +226,27 @@ namespace SetVersionInformation
             Contract.Requires(formatTraits != null);
             Contract.Requires(version != null);
 
-            Console.WriteLine("Found File: {0}", fileName);
-            var fileContents = TextFileHelpers.ReadFileContents(fileName);
+            Console.WriteLine(Resources.AssemblyInfoUpdater_ProcessAssemblyInfoFile_Found_File___0_, fileName);
+            IEnumerable<string> fileContents = TextFileHelpers.ReadFileContents(fileName);
 
             var outputLines = new List<string>();
 
-            var updatedAttributes = UpdateExistingAttributes(fileContents, formatTraits, version, outputLines).ToList().AsReadOnly();
+            ReadOnlyCollection<string> updatedAttributes =
+                UpdateExistingAttributes(fileContents, formatTraits, version, outputLines).ToList().AsReadOnly();
             OutputMissingAttributes(formatTraits, version, outputLines, updatedAttributes);
 
             TextFileHelpers.WriteFileContents(fileName, outputLines);
         }
 
         /// <summary>
-        /// The update existing attributes.
+        ///     The update existing attributes.
         /// </summary>
         /// <param name="fileContents">The file contents.</param>
         /// <param name="formatTraits">The format traits.</param>
         /// <param name="version">The version.</param>
         /// <param name="outputText">The output text.</param>
         /// <returns>
-        /// Collection of tags that were written.
+        ///     Collection of tags that were written.
         /// </returns>
         [NotNull]
         private IEnumerable<string> UpdateExistingAttributes(
@@ -262,13 +262,15 @@ namespace SetVersionInformation
 
             Contract.Ensures(Contract.Result<IEnumerable<string>>() != null);
 
-            foreach (var current in fileContents)
+            foreach (string current in fileContents)
             {
-                var tagFormatter = GetTagFormatter(formatTraits, current);
+                KeyValuePair<string, Func<IAssemblyInfoFormatTraits, VersionProperties, string>>? tagFormatter =
+                    GetTagFormatter(formatTraits, current);
                 if (tagFormatter.HasValue)
                 {
-                    var keyValuePair = tagFormatter.Value;
-                    var str = keyValuePair.Value(formatTraits, version);
+                    KeyValuePair<string, Func<IAssemblyInfoFormatTraits, VersionProperties, string>> keyValuePair =
+                        tagFormatter.Value;
+                    string str = keyValuePair.Value(formatTraits, version);
                     outputText.Add(str);
                     yield return keyValuePair.Key;
                 }
@@ -280,12 +282,14 @@ namespace SetVersionInformation
         }
 
         /// <summary>
-        /// The object Invariant.
+        ///     The object Invariant.
         /// </summary>
         [UsedImplicitly]
         [ContractInvariantMethod]
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Invoked by Code Contracts")]
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Invoked by Code Contracts, non static accesses")]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode",
+            Justification = "Invoked by Code Contracts")]
+        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic",
+            Justification = "Invoked by Code Contracts, non static accesses")]
         private void ObjectInvariant()
         {
             Contract.Invariant(_tagsToModify != null);
